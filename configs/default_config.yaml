@@ -1,0 +1,70 @@
+# Life Expectancy Prediction - Enhanced Configuration
+project:
+  name: "Life Expectancy Prediction Enhanced"
+  version: "2.0.0"
+  description: "Advanced ML pipeline for global health analytics"
+  author: "Utkarsh Sharma - Data Analysis Workspace"
+
+data:
+  target_column: "Life expectancy "
+  country_column: "Country"
+  date_column: "Year"
+  status_column: "Status"
+
+  # Data validation
+  validate_schema: true
+  remove_duplicates: true
+  max_missing_percentage: 30
+
+models:
+  random_forest:
+    enabled: true
+    n_estimators: 100
+    max_depth: null
+    min_samples_split: 2
+    random_state: 42
+
+  linear_regression:
+    enabled: true
+    fit_intercept: true
+
+  svr:
+    enabled: true
+    kernel: "rbf"
+    C: 1.0
+
+  xgboost:
+    enabled: true
+    n_estimators: 100
+    max_depth: 6
+    learning_rate: 0.1
+    random_state: 42
+
+evaluation:
+  test_size: 0.2
+  cv_folds: 5
+  random_state: 42
+  primary_metric: "r2"
+  metrics:
+    - "r2"
+    - "rmse"
+    - "mae"
+
+visualization:
+  style: "whitegrid"
+  palette: "viridis"
+  figure_size: [12, 8]
+  dpi: 300
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/pipeline.log"
+
+paths:
+  raw_data: "data/raw/"
+  processed_data: "data/processed/"
+  models: "models/"
+  reports: "reports/"
+  figures: "reports/figures/"
+  logs: "logs/"

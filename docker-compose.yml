@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  life-expectancy-api:
+    build: .
+    container_name: life-expectancy-api
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+      - FLASK_ENV=production
+    command: python src/api/app.py
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  life-expectancy-dashboard:
+    build: .
+    container_name: life-expectancy-dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./reports:/app/reports
+    environment:
+      - PYTHONPATH=/app
+    command: streamlit run src/app/streamlit_app.py --server.port=8501 --server.address=0.0.0.0
+    depends_on:
+      - life-expectancy-api
+    restart: unless-stopped
+
+  life-expectancy-training:
+    build: .
+    container_name: life-expectancy-training
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+    command: python main.py --config configs/default_config.yaml
+    profiles:
+      - training
+
+volumes:
+  data:
+  models:
+  reports:
+  logs:
+
+networks:
+  default:
+    name: life-expectancy-network
