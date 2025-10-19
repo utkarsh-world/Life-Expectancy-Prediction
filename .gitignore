@@ -100,6 +100,7 @@ models/*.pkl
 models/*.h5
 models/*.pb
 !models/.gitkeep
+!models/random_forest.joblib
 
 # Logs
 logs/*.log
